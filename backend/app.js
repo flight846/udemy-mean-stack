@@ -1,15 +1,19 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Header', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
   next();
 })
 
-app.use('/api/posts', (req, res, next) => {
+app.get('/api/posts', (req, res, next) => {
   const posts = [
     {
       id: "fad2993809",
@@ -28,6 +32,14 @@ app.use('/api/posts', (req, res, next) => {
       message: 'Posts fetched successfully',
       posts
     });
+})
+
+app.post('/api/posts', (req, res, next) => {
+  const post = req.body
+  console.log(post);
+  res.status(201).json({
+    message: 'Post added successfully'
+  })
 })
 
 module.exports = app;
