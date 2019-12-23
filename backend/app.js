@@ -1,7 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+const Post = require('./models/post');
 
 const app = express();
+
+mongoose
+  .connect(
+    "mongodb+srv://flight846:flight846@cluster0-cai4b.mongodb.net/test?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      connectTimeoutMS: 60000
+    }
+  )
+  .then(() => {
+    console.log("Connected to database");
+  })
+  .catch(err => console.log(err));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -35,7 +52,10 @@ app.get('/api/posts', (req, res, next) => {
 })
 
 app.post('/api/posts', (req, res, next) => {
-  const post = req.body
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
+  })
   console.log(post);
   res.status(201).json({
     message: 'Post added successfully'
