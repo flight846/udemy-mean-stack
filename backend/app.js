@@ -8,11 +8,9 @@ const app = express();
 
 mongoose
   .connect(
-    "mongodb+srv://flight846:flight846@cluster0-cai4b.mongodb.net/test?retryWrites=true&w=majority",
+    "mongodb+srv://flight846:flight846@cluster0-cai4b.mongodb.net/mean-course?retryWrites=true&w=majority",
     {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
-      connectTimeoutMS: 60000
     }
   )
   .then(() => {
@@ -31,24 +29,16 @@ app.use((req, res, next) => {
 })
 
 app.get('/api/posts', (req, res, next) => {
-  const posts = [
-    {
-      id: "fad2993809",
-      title: "First server-side post",
-      content: "This is coming from the server"
-    },
-    {
-      id: "fad2993810",
-      title: "Second server-side post",
-      content: "This is coming from the server post 2"
-    }
-  ];
-  res
-    .status(200)
-    .json({
-      message: 'Posts fetched successfully',
-      posts
-    });
+  // return all entries
+  Post.find()
+    .then(data => {
+      res
+        .status(200)
+        .json({
+          message: 'Posts fetched successfully',
+          posts: data
+        });
+    })
 })
 
 app.post('/api/posts', (req, res, next) => {
@@ -56,7 +46,7 @@ app.post('/api/posts', (req, res, next) => {
     title: req.body.title,
     content: req.body.content
   })
-  console.log(post);
+  post.save();
   res.status(201).json({
     message: 'Post added successfully'
   })
