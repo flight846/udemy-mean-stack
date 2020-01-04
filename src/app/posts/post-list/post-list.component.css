@@ -1,6 +1,12 @@
 :host {
   display: block;
-  margin-top: 1rem;;
+  margin-top: 1rem;
 }
 
-.info-text { text-align: center; }
+mat-spinner {
+  margin: auto;
+}
+
+.info-text {
+  text-align: center;
+}
