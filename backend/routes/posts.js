@@ -27,6 +27,7 @@ const storage = multer.diskStorage({
   }
 })
 
+// add a post
 router.post("", multer({ storage }).single("image"), (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
   const post = new Post({
@@ -45,6 +46,7 @@ router.post("", multer({ storage }).single("image"), (req, res, next) => {
   });
 });
 
+// update a post
 router.put("/:id", multer({ storage }).single("image"), (req, res, next) => {
   let imagePath = req.body.imagePath;
   if (req.file) {
@@ -62,8 +64,19 @@ router.put("/:id", multer({ storage }).single("image"), (req, res, next) => {
   });
 });
 
+// get posts
 router.get("", (req, res, next) => {
-  Post.find().then(documents => {
+  const pageSize = +req.query.pagesize;
+  const currentPage = req.query.page;
+  const postQuery = Post.find();
+
+  if (pageSize && currentPage) {
+    postQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize)
+  }
+
+  postQuery.find().then(documents => {
     res.status(200).json({
       message: "Posts fetched successfully!",
       posts: documents
@@ -71,6 +84,7 @@ router.get("", (req, res, next) => {
   });
 });
 
+// get single post
 router.get("/:id", (req, res, next) => {
   Post.findById(req.params.id).then(post => {
     if (post) {
@@ -81,6 +95,8 @@ router.get("/:id", (req, res, next) => {
   });
 });
 
+
+// delete a post
 router.delete("/:id", (req, res, next) => {
   Post.deleteOne({ _id: req.params.id }).then(result => {
     console.log(result);
